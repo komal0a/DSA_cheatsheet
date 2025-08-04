@@ -66,3 +66,26 @@ Value at (4, 2) = `6` (Because it's 4C2)
 - **Space Complexity**: O(1)
 
 ---
+## Kadane’s Algorithm – Maximum Subarray Sum
+
+Kadane's Algorithm is used to find the maximum sum of a contiguous subarray in a given integer array.
+
+### 🔸 Key Idea
+Keep a running sum (`curSum`) and reset it to 0 whenever it drops below 0. Track the maximum value seen so far (`maxSum`).
+
+### 🧠 Intuition
+If adding the current element drops the sum below 0, that subarray can't contribute to a maximum sum ahead—so reset.
+
+### 📘 Dry Run Example
+Given `arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]`:
+
+1. Start with `curSum = 0`, `maxSum = -∞`
+2. Update `curSum` at each index:
+   - If `curSum < 0`, reset to 0
+   - Update `maxSum = max(maxSum, curSum)`
+
+Final `maxSum = 6` for subarray `[4, -1, 2, 1]`
+
+### ✅ Time & Space
+- Time: `O(n)`
+- Space: `O(1)`
