@@ -132,3 +132,106 @@ Just like arranging flags in the Dutch flag!
 ### 🏷️ Tags
 `Array`, `Two Pointers`, `Sorting`, `In-place Algorithm`
 
+### 🧾 Description
+
+You are given an array of intervals where `intervals[i] = [start_i, end_i]`.  
+Merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the intervals in the input.
+
+---
+
+### 📌 Approach
+
+1. **Sort** the intervals based on their starting point.
+2. Initialize a temp interval with the first one.
+3. Traverse the list:
+   - If the current interval overlaps with temp, merge them.
+   - If not, push temp to answer and move on.
+4. Push the last interval to the result.
+
+---
+
+### 💡 Time & Space Complexity
+
+- **Time:** `O(n log n)` – due to sorting
+- **Space:** `O(n)` – for the result vector
+
+---
+
+### 👨‍💻 Code
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<vector<int>> ans;
+        int n = intervals.size();
+
+        if (n == 0) return ans;
+
+        sort(intervals.begin(), intervals.end());
+
+        vector<int> temp = intervals[0];
+
+        for (int i = 1; i < n; i++) {
+            if (temp[1] >= intervals[i][0]) {
+                temp[1] = max(temp[1], intervals[i][1]);
+            } else {
+                ans.push_back(temp);
+                temp = intervals[i];
+            }
+        }
+
+        ans.push_back(temp);
+        return ans;
+    }
+};
+
+## 287. Find the Duplicate Number
+
+**Difficulty**: Medium  
+**Link**: [LeetCode 287](https://leetcode.com/problems/find-the-duplicate-number/)
+
+### Problem
+Given an array `nums` containing `n + 1` integers where each integer is in the range `[1, n]` inclusive.  
+There is only one repeated number in `nums`, return this repeated number.
+
+You must solve the problem **without modifying** the array and using only **constant extra space**.
+
+---
+
+### Approach
+
+We use **Floyd's Tortoise and Hare (Cycle Detection)** method to find the duplicate number.
+
+- Treat the array as a linked list, where `nums[i]` is the next node.
+- The cycle entry point is the duplicate number.
+
+---
+
+### Code
+
+```cpp
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int slow = nums[0];
+        int fast = nums[0];
+
+        // Phase 1: Detect the cycle
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+
+        // Phase 2: Find the entrance to the cycle
+        slow = nums[0];
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+
+        return slow;
+    }
+};
+
+
