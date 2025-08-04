@@ -89,3 +89,46 @@ Final `maxSum = 6` for subarray `[4, -1, 2, 1]`
 ### ✅ Time & Space
 - Time: `O(n)`
 - Space: `O(1)`
+
+- ## 🎨 Sort Colors (Dutch National Flag Problem)
+
+### 🧩 Problem
+Given an array `nums` with `n` objects colored red (`0`), white (`1`), or blue (`2`), sort them **in-place** so that objects of the same color are adjacent and in the order red → white → blue.
+
+### 🔧 Constraints
+- Do not use library sort functions.
+- Must solve in one pass using **constant space**.
+
+---
+
+### ✅ Optimal Approach: Dutch National Flag Algorithm
+
+#### 💡 Idea
+Use three pointers:
+- `low` — boundary for 0s
+- `mid` — current element
+- `high` — boundary for 2s
+
+#### 🔁 Logic
+- If `nums[mid] == 0`: swap with `low`, increment both
+- If `nums[mid] == 1`: move `mid` forward
+- If `nums[mid] == 2`: swap with `high`, decrement `high`
+
+#### ⏱️ Time & Space
+- Time: `O(n)`
+- Space: `O(1)` — in-place
+
+---
+
+### 🧠 Intuition
+You're essentially grouping elements by pushing:
+- All `0`s to the front
+- All `2`s to the end
+- Leaving `1`s in the middle
+Just like arranging flags in the Dutch flag!
+
+---
+
+### 🏷️ Tags
+`Array`, `Two Pointers`, `Sorting`, `In-place Algorithm`
+
