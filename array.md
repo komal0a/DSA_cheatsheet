@@ -235,3 +235,189 @@ public:
 };
 
 
+# 🧮 Count Subarrays with Given XOR K
+
+## ✅ Problem Statement
+
+Given an array of integers `nums` and an integer `k`, return the total number of **subarrays whose XOR equals to `k`**.
+
+### 📌 Constraints:
+- Time Complexity: O(n)
+- Space Complexity: O(n)
+
+---
+
+## 💡 Approach: Prefix XOR + Hash Map
+
+### 🔑 Key Idea:
+
+If `xr` is the prefix XOR at index `i`, and we want subarrays with XOR `k`,  
+then we check how many times `xr ^ k` occurred **before**.
+
+Because:
+
+### 🔁 Steps:
+
+1. Initialize a map to store prefix XOR counts: `unordered_map<int, int> mp`
+2. Traverse the array while computing prefix XOR.
+3. If `xr == k`, increment the count.
+4. If `xr ^ k` exists in the map, add the number of times it appeared.
+5. Update the map with the current `xr`.
+
+---
+
+## 🧑‍💻 Code (C++)
+
+```cpp
+int subarraysWithXorK(vector<int>& nums, int k) {
+    unordered_map<int, int> mp;
+    int xr = 0, count = 0;
+
+    for (int i = 0; i < nums.size(); i++) {
+        xr ^= nums[i];
+
+        if (xr == k) count++;
+
+        if (mp.find(xr ^ k) != mp.end()) {
+            count += mp[xr ^ k];
+        }
+
+        mp[xr]++;
+    }
+
+    return count;
+}
+
+
+class Solution{
+public:
+    int longestSubarray(vector<int> &nums, int k){
+        unordered_map<int,int>mp;
+        mp[0]=-1;//for subarray starting from index 0
+        int length=0;int sum=0;
+        for(int i=0;i<n;i++){
+            sum+=nums[i];
+            if(mp.find(sum-k)!=mp.end()){
+                maxi=max(maxi,i-mp[sum-k]);
+            }else{
+            mp[sum]=i;
+            }
+        }
+    }
+};
+
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int n= nums.size();
+        int cnt=0;
+        int num1=0;
+        for(int i=0; i<n;i++){
+            if(cnt==0){
+                num1=nums[i];
+                cnt=1;
+            }
+           else if(nums[i]!=num1){
+                cnt--;
+            }else{
+                cnt++;
+            }
+        }
+        return num1;
+    }
+};
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int n= nums.size();
+        unordered_map<int,int>mp;
+        vector<int>ans(2,-1);
+        for(int i=0; i<n;i++){
+            if(mp.find(target-nums[i]) != mp.end()){
+                return {i,mp[target-nums[i]]};
+            }else{
+                mp[nums[i]]=i;
+            }
+        }
+        return {};
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> ans;
+        int n = nums.size();
+        
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            
+            for (int j = i + 1; j < n; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+                
+                int k = j + 1, l = n - 1;
+                while (k < l) {
+                    long long sum = 1LL * nums[i] + nums[j] + nums[k] + nums[l];
+                    if (sum == target) {
+                        ans.push_back({nums[i], nums[j], nums[k], nums[l]});
+                        k++;
+                        l--;
+                        while (k < l && nums[k] == nums[k - 1]) k++;
+                        while (k < l && nums[l] == nums[l + 1]) l--;
+                    } else if (sum < target) {
+                        k++;
+                    } else {
+                        l--;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+     //1st unordered_map,o(n^2),o(n);
+    //2nd sorting and counting o(nlogn),o(1);
+    //optimal
+    int n= nums.size();
+    if(n==1)return {nums[0]};
+
+    int count1=0,count2=0;int candidate1=INT_MIN,candidate2=INT_MIN;
+    for(int num:nums){
+        if (num == candidate1) {
+                count1++;
+            }
+            else if (num == candidate2) {
+                count2++;
+            }
+            else if (count1 == 0) {
+                candidate1 = num;
+                count1 = 1;
+            }
+            else if (count2 == 0) {
+                candidate2 = num;
+                count2 = 1;
+            }
+            else {
+                count1--;
+                count2--;
+            }
+    }
+    int count11=0;
+    int count22=0;
+    for(int num:nums){
+        if(num==candidate1)count11++;
+        else if(num==candidate2)count22++;
+    }
+    vector<int>ans;
+    if(count11>n/3)ans.push_back(candidate1);
+    if(count22>n/3)ans.push_back(candidate2);
+    return ans;
+    }
+};
+
+
