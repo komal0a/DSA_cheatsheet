@@ -188,3 +188,64 @@ This ensures both pointers cover equal distance. They will meet at the intersect
 - Time Complexity: **O(n + m)**
 - Space Complexity: **O(1)**
 - Handles different list lengths and no-intersection cases smoothly.
+
+
+## 🔁 Palindrome Linked List
+
+### 🔗 Problem
+[LeetCode 234 - Palindrome Linked List](https://leetcode.com/problems/palindrome-linked-list/)
+
+---
+
+### 🧠 Summary
+
+To check if a singly linked list is a palindrome:
+
+1. **Find the middle** of the list using the slow and fast pointer technique.  
+   - In case of an **even-length** list, the `slow` pointer will point to the **first** of the two middle nodes.
+2. **Reverse the second half** of the list starting from the node after `slow`.
+3. **Compare** the first half and the reversed second half.
+4. (Optional) Restore the reversed half to keep the list unchanged.
+
+If all corresponding nodes match, the list is a palindrome.
+
+---
+
+### 💻 Code (C++)
+
+```cpp
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        if (!head || !head->next) return true;
+
+        // Step 1: Find the middle
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while (fast->next && fast->next->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        // Step 2: Reverse second half
+        ListNode* prev = nullptr;
+        ListNode* curr = slow->next;
+        while (curr) {
+            ListNode* nextt = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = nextt;
+        }
+
+        // Step 3: Compare both halves
+        ListNode* first = head;
+        ListNode* second = prev;
+        while (second) {
+            if (first->val != second->val) return false;
+            first = first->next;
+            second = second->next;
+        }
+
+        return true;
+    }
+};
