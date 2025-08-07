@@ -2,7 +2,7 @@
 ## 🔄 Reverse Linked List
 
 ### ✅ Problem Statement
-Given the head of a singly linked list, reverse the list and return the head of the reversed list.
+Given the head of a singly linked list, reverse the list and return the head of the reversed list.  
  */
 class Solution {
 public:
