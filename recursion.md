@@ -60,3 +60,77 @@ For `nums = [1, 2, 2]`:
 Sorted: `[1, 2, 2]`
 
 Subsets generated:
+
+
+# 💡 Dry Run and Explanation of `Combination Sum II` Problem
+
+## ✅ Problem Statement
+
+Given a list of `candidates` (may include duplicates) and a `target`, return all unique combinations where the candidate numbers sum to `target`. Each number in `candidates` may only be used **once** in the combination.
+
+---
+
+## 🔧 Code Used
+
+```cpp
+class Solution {
+public:
+    void solve(vector<int>& candidates, int n, int ind, int target, vector<int>& temp, vector<vector<int>>& ans) {
+        if (target == 0) {
+            ans.push_back(temp);
+            return;
+        }
+
+        for (int i = ind; i < n; i++) {
+            if (i > ind && candidates[i] == candidates[i - 1]) continue;
+            if (candidates[i] > target) break;
+
+            temp.push_back(candidates[i]);
+            solve(candidates, n, i + 1, target - candidates[i], temp, ans);
+            temp.pop_back();
+        }
+    }
+
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        vector<int> temp;
+        vector<vector<int>> ans;
+        int n = candidates.size();
+        solve(candidates, n, 0, target, temp, ans);
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    int n;
+    bool ispalindrome(string& s , int start, int end){
+        while(start<end){
+            if(s[start++]!=s[end--])return false;
+        }
+        return true;
+    }
+
+    void solve(vector<string>&temp,vector<vector<string>>&ans,string s, int i){
+        if(i==n){
+            ans.push_back(temp);
+            return;
+        }
+
+        for(int j=i;j<n;j++){
+            if(ispalindrome(s,i,j)){
+            temp.push_back(s.substr(i, j - i + 1));
+            solve(temp,ans,s,j+1);
+            temp.pop_back();
+            }
+        }
+    }
+    vector<vector<string>> partition(string s) {
+        vector<string>temp;
+        vector<vector<string>>ans;
+        n= s.length();
+
+        solve(temp,ans,s,0);
+        return ans;
+    }
+};
