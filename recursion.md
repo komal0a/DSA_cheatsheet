@@ -134,3 +134,229 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+
+    void solve(vector<int>& nums, vector<int>&temp,vector<vector<int>>&ans,unordered_set<int>&st){
+        if(temp.size()==nums.size()){
+            ans.push_back(temp);
+            return;
+        }
+
+        for(int i=0; i<nums.size();i++){
+            if(st.find(nums[i])==st.end()){
+                temp.push_back(nums[i]);
+                st.insert(nums[i]);
+                solve(nums,temp,ans,st);
+                temp.pop_back();
+                st.erase(nums[i]);
+            }
+        }
+    }
+
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<int>temp;
+        vector<vector<int>>ans;
+        unordered_set<int>st;
+        solve(nums,temp,ans,st);
+        return ans;
+
+    }
+};
+
+class Solution {
+public:
+    bool isSafe(int row, int col, vector<string>& board, int n) {
+        // Check upper-left diagonal
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--)
+            if (board[i][j] == 'Q') return false;
+
+        // Check left side
+        for (int j = col - 1; j >= 0; j--)
+            if (board[row][j] == 'Q') return false;
+
+        // Check lower-left diagonal
+        for (int i = row + 1, j = col - 1; i < n && j >= 0; i++, j--)
+            if (board[i][j] == 'Q') return false;
+
+        return true;
+    }
+
+    void solve(int col, vector<string>& board, vector<vector<string>>& ans, int n) {
+        if (col == n) {
+            ans.push_back(board);
+            return;
+        }
+
+        for (int row = 0; row < n; row++) {
+            if (isSafe(row, col, board, n)) {
+                board[row][col] = 'Q';
+                solve(col + 1, board, ans, n);
+                board[row][col] = '.';
+            }
+        }
+    }
+
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> ans;
+        vector<string> board(n, string(n, '.'));
+        solve(0, board, ans, n);
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    void solve(int col, vector<string>& board, vector<vector<string>>& ans,
+               vector<int>& leftRow, vector<int>& upperDiagonal, vector<int>& lowerDiagonal, int n) {
+        if (col == n) {
+            ans.push_back(board);
+            return;
+        }
+
+        for (int row = 0; row < n; row++) {
+            if (leftRow[row] == 0 && lowerDiagonal[row + col] == 0 && upperDiagonal[n - 1 + col - row] == 0) {
+                board[row][col] = 'Q';
+                leftRow[row] = 1;
+                lowerDiagonal[row + col] = 1;
+                upperDiagonal[n - 1 + col - row] = 1;
+
+                solve(col + 1, board, ans, leftRow, upperDiagonal, lowerDiagonal, n);
+
+                board[row][col] = '.';
+                leftRow[row] = 0;
+                lowerDiagonal[row + col] = 0;
+                upperDiagonal[n - 1 + col - row] = 0;
+            }
+        }
+    }
+
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> ans;
+        vector<string> board(n, string(n, '.'));
+        vector<int> leftRow(n, 0), upperDiagonal(2 * n - 1, 0), lowerDiagonal(2 * n - 1, 0);
+        solve(0, board, ans, leftRow, upperDiagonal, lowerDiagonal, n);
+        return ans;
+    }
+};
+
+
+class Solution {
+public: 
+
+    bool issafe(int row,int col, char ch,vector<vector<char>>&board){
+        for(int i=0; i<9;i++){
+            if(board[row][i]==ch){
+                return false;//for col
+            }
+
+             if(board[i][col]==ch){
+                return false;//for row
+            }
+
+            if(board[3*(row/3) + i/3][3*(col/3) + i%3]==ch){
+                return false;//for particular compartment
+            }
+        }
+        return true;
+    }
+
+    bool solve(vector<vector<char>>& board){
+        for(int i=0; i<9;i++){
+            for(int j=0;j<9;j++){
+                if(board[i][j]=='.'){
+                    for(char c='1';c<='9';c++){
+                        if(issafe(i,j,c,board)){
+                            board[i][j]=c;
+                            if(solve(board))return true;
+                            board[i][j]='.';
+                    }
+                    }
+                    return false;
+                }
+             }
+         }
+         return true;
+    }
+    void solveSudoku(vector<vector<char>>& board) {
+
+        solve(board);
+        
+    }
+};
+
+class Solution{
+public: 
+    bool issafe(unordered_map<int,vector<int>>&mpp,int node,int color,vector<int>&visited){
+          for (int adj : mpp[node]) {
+            if (visited[adj] == color) return false;
+        }
+        return true;
+    }
+
+    bool solve(unordered_map<int,vector<int>>&mpp,int i,int m,int n,vector<int>&visited){
+        if(i==n){
+           return true;
+        }
+
+        for(int color=0; color<m;color++){
+            if(issafe(mpp,i,color,visited)){
+                visited[i]=color;
+                if(solve(mpp,i+1,m,n,visited))return true;
+                visited[i]=-1;
+            }
+        }
+        return false;
+    }
+
+    bool graphColoring(vector<vector<int> >& edges, int m, int n) {
+    	//your code goes here
+    
+        vector<int>visited(n,-1);
+        unordered_map<int,vector<int>>mpp;
+         for (auto& edge : edges) {
+            int from = edge[0], to = edge[1];
+            mpp[from].push_back(to);
+            mpp[to].push_back(from);
+        }
+        return solve(mpp, 0, m, n, visited);
+    }
+};
+
+class Solution{
+    public:
+    int n;
+    void solve(vector<vector<int>>&grid,int dx[],int dy[],string& ch,int row,int col,string temp,vector<string>&ans, vector<vector<int>>&visited){
+        if(row==0 && col==0){
+            reverse(temp.begin(),temp.end());
+            ans.push_back(temp);
+        }
+
+        visited[row][col]=1;
+        for(int i=0; i<4;i++){
+            int nexti=row+dx[i];
+            int nextj=col+dy[i];
+            if(nexti>=0 && nextj>=0 && nexti<n && nextj<n && visited[nexti][nextj]==0 && grid[nexti][nextj]==1){
+
+                solve(grid,dx,dy,ch,nexti,nextj,temp+ch[i],ans,visited);
+                
+            }
+
+        }
+        visited[row][col]=0;
+    }
+    vector<string> findPath(vector<vector<int> > &grid) {
+        n= grid.size();
+        if(grid[0][0]==0 || grid[n-1][n-1]==0)return {};
+        //your code goes here
+
+        int dx[4]={1,0,0,-1};
+        int dy[4]={0,-1,1,0};
+        string ch="DLRU";
+        vector<string>ans;
+        vector<vector<int>>visited(n,vector<int>(n,0));
+        solve(grid,dx,dy,ch,n-1,n-1,"",ans,visited);
+        return ans;
+    }
+};
