@@ -360,3 +360,123 @@ class Solution{
         return ans;
     }
 };
+
+# 🔍 Leetcode 540: Single Element in a Sorted Array
+
+## ✅ Problem Statement
+
+You are given a sorted array consisting of only integers where every element appears exactly twice, except for one element which appears exactly once.
+
+Find that single element in **O(log n)** time and **O(1)** space.
+
+---
+
+## 🧠 Approach
+
+We use **binary search** with the observation that:
+
+- In a perfectly paired array, before the single element:
+  - First instance of a pair appears at even index
+  - Second instance at odd index
+- After the single element, this pairing breaks
+
+We search for the **first occurrence** where this pairing fails.
+
+---
+
+## 👨‍💻 Code (C++)
+
+```cpp
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& nums) {
+        int n = nums.size();
+        if (n == 1) return nums[0];
+
+        if (nums[0] != nums[1]) return nums[0];
+        if (nums[n - 1] != nums[n - 2]) return nums[n - 1];
+
+        int l = 1;
+        int h = n - 2;
+
+        while (l <= h) {
+            int mid = l + (h - l) / 2;
+
+            // Check if nums[mid] is the unique element
+            if (nums[mid] != nums[mid - 1] && nums[mid] != nums[mid + 1]) {
+                return nums[mid];
+            }
+
+            // Pair is in correct order → unique is on the right
+            if ((mid % 2 == 0 && nums[mid] == nums[mid + 1]) ||
+                (mid % 2 == 1 && nums[mid] == nums[mid - 1])) {
+                l = mid + 1;
+            } else {
+                h = mid - 1;
+            }
+        }
+
+        return -1; // Should never reach here
+    }
+};
+
+
+# 🔍 Leetcode 33: Search in Rotated Sorted Array
+
+## ✅ Problem Statement
+
+You are given an integer array `nums` sorted in ascending order (with **distinct** values), but it has been **rotated at an unknown pivot**.
+
+You are also given a target value. Return the **index** of the target if it is in the array; otherwise, return `-1`.
+
+You must write an algorithm with **O(log n)** runtime complexity.
+
+---
+
+## 🧠 Approach
+
+We apply **binary search** with an additional check to determine which side of the array is sorted.
+
+At each step:
+- Check if the **left half** is sorted.
+- If target lies in the **sorted half**, adjust `l` and `r` accordingly.
+- Otherwise, search in the other half.
+
+---
+
+## 👨‍💻 Code (C++)
+
+```cpp
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int n = nums.size();
+        int l = 0, r = n - 1;
+
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+
+            if (nums[mid] == target) return mid;
+
+            // Check if left half is sorted
+            if (nums[l] <= nums[mid]) {
+                if (nums[l] <= target && target <= nums[mid]) {
+                    r = mid - 1;
+                } else {
+                    l = mid + 1;
+                }
+            }
+            // Else, right half is sorted
+            else {
+                if (nums[mid] <= target && target <= nums[r]) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+        }
+
+        return -1;
+    }
+};
+
