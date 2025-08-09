@@ -480,3 +480,112 @@ public:
     }
 };
 
+
+# 📚 Book Allocation Problem
+
+## ✅ Problem Statement
+
+You are given:
+- An array `nums[]` of integers where each element represents the number of pages in a book.
+- An integer `m` representing the number of students.
+
+The task is to allocate books such that:
+1. Each student gets **at least one book**.
+2. Each book is allocated to exactly one student.
+3. The **maximum number of pages assigned to any student** is minimized.
+
+Return this **minimum possible maximum pages**.
+
+If the number of books is less than the number of students, return `-1`.
+
+---
+
+## 🧠 Approach
+
+We use **Binary Search on the Answer**:
+
+1. **Range of Search:**
+   - Lower bound `l` = `max(nums)` → A student must read at least the largest book.
+   - Upper bound `h` = `sum(nums)` → One student reads all books.
+
+2. **Feasibility Function `func()`**:
+   - Given a maximum allowed page limit `pages`, we check if we can allocate books to **at most `m` students** without exceeding `pages` for any student.
+   - If possible, we try a smaller `pages` (move left).
+   - If not possible, we increase `pages` (move right).
+
+3. **Goal:**
+   - Find the smallest `pages` such that allocation is possible.
+
+---
+
+## 👨‍💻 Code (C++)
+
+```cpp
+class Solution {
+public:
+    int func(vector<int> &nums, int pages, int m) {
+        int cnt = 1; // number of students
+        int last = nums[0]; // pages for current student
+        
+        for (int i = 1; i < nums.size(); i++) {
+            if (last + nums[i] > pages) {
+                cnt++;
+                last = 0;
+            }
+            last += nums[i];
+        }
+        return cnt <= m;
+    }
+
+    int findPages(vector<int> &nums, int m) {
+        if (nums.size() < m) return -1; // Not enough books
+
+        int l = *max_element(nums.begin(), nums.end());
+        int h = accumulate(nums.begin(), nums.end(), 0);
+        int ans = 0;
+
+        while (l <= h) {
+            int mid = l + (h - l) / 2;
+            if (func(nums, mid, m)) {
+                ans = mid;
+                h = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+class Solution {
+public:
+    int func(vector<int> &nums, int dist,int k){
+        int last=0;
+        int cnt=1;
+        for(int i=1; i<nums.size();i++){
+            if(nums[i]-nums[last]>=dist){
+                cnt++;
+                last=i;
+            }
+        }
+        if(k<=cnt)return 1;
+        return 0;
+    }
+    int aggressiveCows(vector<int> &nums, int k) {
+        sort(nums.begin(),nums.end());
+        int ans=0;
+        int l=1; int h=nums[nums.size()-1]-nums[0];
+        while(l<=h){
+            int mid=l+(h-l)/2;
+            if(func(nums,mid,k)){
+                ans=mid;
+                l=mid+1;
+            }else{
+                h=mid-1;
+            }
+        }
+        return ans;
+    }
+};
