@@ -284,3 +284,83 @@ public:
         return path; // Empty if target not found
     }
 };
+
+# 📝 Problem: Maximum Width of Binary Tree
+
+## 📄 Problem Statement
+Given the root of a binary tree, return the **maximum width** of the given tree.  
+The **maximum width** is the maximum number of nodes at any level, **counting the null nodes between non-null nodes**.
+
+The width of a level is defined as the length between the **leftmost** and **rightmost** non-null nodes (inclusive of null positions).
+
+---
+
+## 💡 Intuition
+We can think of the binary tree as being **indexed** like a binary heap:
+- Root has index `0`
+- Left child = `2 * index + 1`
+- Right child = `2 * index + 2`
+
+If we know the **index of the first and last node** at each level,  
+we can calculate that level's width as:
+
+⚠ **Overflow Prevention**:  
+Since indices grow exponentially for deep trees, we store them as `unsigned long long` and normalize each level by subtracting the minimum index of that level (`mini`).
+
+---
+
+## ⏳ Time Complexity
+- **O(N)** — Each node is visited once.
+
+## 📦 Space Complexity
+- **O(N)** — Queue for BFS traversal.
+
+---
+
+## 💻 Code Implementation
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int widthOfBinaryTree(TreeNode* root) {
+        if (root == nullptr) return 0;
+
+        // BFS queue: stores {node, index}
+        queue<pair<TreeNode*, unsigned long long>> qt;
+        qt.push({root, 0});
+        int maxi = 0;
+
+        while (!qt.empty()) {
+            int size = qt.size();
+            unsigned long long mini = qt.front().second; // normalize indices
+            unsigned long long first = 0, last = 0;
+
+            for (int i = 0; i < size; i++) {
+                TreeNode* node = qt.front().first;
+                unsigned long long val = qt.front().second - mini;
+                qt.pop();
+
+                if (i == 0) first = val;
+                if (i == size - 1) last = val;
+
+                if (node->left)  qt.push({node->left, val * 2 + 1});
+                if (node->right) qt.push({node->right, val * 2 + 2});
+            }
+
+            maxi = max(maxi, static_cast<int>(last - first + 1));
+        }
+
+        return maxi;
+    }
+};
