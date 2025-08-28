@@ -420,4 +420,315 @@ public:
     }
 };
 
+# Next Permutation — Lexicographically Next Greater Permutation
 
+A concise, GitHub‑ready write‑up for the classic **Next Permutation** problem (a.k.a. LeetCode 31). It follows the well‑known O(n) in‑place algorithm.
+
+---
+
+## Problem
+
+Given an array of integers `nums`, rearrange it into the **next lexicographically greater** permutation. If no such permutation exists (the array is in non‑increasing order), rearrange it to the **lowest** possible order (sorted ascending). The replacement must be in place with constant extra memory.
+
+---
+
+## Approaches
+
+### Brute Force
+
+* Generate all possible permutations of the array.
+* Sort them lexicographically.
+* Find the current permutation, and return the one next to it.
+
+**Drawbacks:**
+
+* Generating all permutations takes **O(n! · n)** time, which is infeasible for even moderately large `n`.
+
+---
+
+### Better (Optimal O(n))
+
+The standard approach works in linear time and constant space:
+
+1. **Scan from right** to find the first index `i` such that `nums[i] < nums[i+1]`. If none, reverse the whole array and stop.
+2. **Find successor**: from the end, find the first `j > i` with `nums[j] > nums[i]`. Swap `nums[i]` and `nums[j]`.
+3. **Reverse suffix** starting at `i+1` to the end.
+
+This produces the next lexicographic permutation in‑place.
+
+---
+
+## Intuition
+
+From the right, the permutation is already the largest possible until a position where an increase is still possible. We:
+
+1. find the rightmost position that can be increased,
+2. bump it slightly by the smallest larger number to its right,
+3. make the right side as small as possible (sort ascending ⇒ reverse a decreasing suffix).
+
+---
+
+## Correctness Sketch
+
+* Step 1 ensures positions to the right of `i` form a maximal (non‑increasing) suffix; any increase must modify index `i`.
+* Step 2 picks the smallest element larger than `nums[i]` within that suffix, creating the minimal possible increase.
+* Step 3 makes the suffix minimal (ascending), giving the smallest permutation greater than the original.
+
+---
+
+## Complexity
+
+* **Time:** O(n)
+* **Space:** O(1)
+
+---
+
+## Examples
+
+### Example 1
+
+Input: `[1, 2, 3]` → Output: `[1, 3, 2]`
+
+### Example 2
+
+Input: `[3, 2, 1]` → Output: `[1, 2, 3]` (wraps to the lowest order)
+
+### Example 3
+
+Input: `[1, 1, 5]` → Output: `[1, 5, 1]`
+
+### Example 4
+
+Input: `[1, 3, 2]` → Output: `[2, 1, 3]`
+
+---
+
+## Implementations
+
+### C++
+
+```cpp
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int n = nums.size();
+        int i = n - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) i--;
+        if (i >= 0) {
+            int j = n - 1;
+            while (nums[j] <= nums[i]) j--;
+            swap(nums[i], nums[j]);
+        }
+        reverse(nums.begin() + i + 1, nums.end());
+    }
+};
+```
+
+## Edge Cases & Tips
+
+* Already highest permutation (non‑increasing order) ⇒ reverse all.
+* Duplicates are fine; comparisons stay strict (`>` / `<`).
+* Works for any comparable elements, not just integers.
+* In‑place only; no extra arrays.
+
+---
+
+## Quick Tests
+
+```text
+[1,2,3]   -> [1,3,2]
+[1,3,2]   -> [2,1,3]
+[2,3,1]   -> [3,1,2]
+[3,2,1]   -> [1,2,3]
+[1,1,5]   -> [1,5,1]
+```
+
+---
+
+## Reference
+
+This write‑up is based on the standard algorithm for next permutation. A helpful explainer is available here:
+
+* [https://takeuforward.org/data-structure/next\_permutation-find-next-lexicographically-greater-permutation/](https://takeuforward.org/data-structure/next_permutation-find-next-lexicographically-greater-permutation/)
+* LeetCode 31 — Next Permutation
+
+---
+
+## License
+
+You can copy this README into your repository. Attribution appreciated but not required.
+# Count Inversions in an Array
+
+A clear and concise README for the classic **Count Inversions** problem, highlighting both brute-force and efficient merge-sort-based solutions.
+
+---
+
+## Problem Statement
+
+Given an array of integers `arr`, **count the number of inversions**. An inversion is any pair `(i, j)` such that:
+
+- `i < j`
+- `arr[i] > arr[j]`
+
+The inversion count measures how "unsorted" the array is:  
+- A fully sorted (ascending) array has 0 inversions.  
+- A reverse-sorted array has the maximum possible inversions.  
+:contentReference[oaicite:0]{index=0}
+
+---
+
+## Approaches
+
+### 1. Brute Force (O(n²))
+
+- Use two nested loops to compare each pair `(i < j)` and increment the count if `arr[i] > arr[j]`.
+- Intuitive and easy, but inefficient for large arrays.
+
+**Time Complexity:** O(n²)  
+**Space Complexity:** O(1)  
+:contentReference[oaicite:1]{index=1}
+
+---
+
+### 2. Efficient Using Merge Sort (O(n log n))
+
+- Use a divide-and-conquer strategy similar to merge sort:
+  1. Recursively count inversions in the left and right halves.
+  2. Sort both halves.
+  3. During the merge step, count cross-inversions: when an element in the left half is greater than one in the right, all remaining elements in the left half beyond that point contribute to inversions.
+- Much more efficient, leveraging sorting to count inversions in linear time during merge.
+
+**Time Complexity:** O(n log n)  
+**Space Complexity:** O(n) — due to temporary arrays during merging  
+:contentReference[oaicite:2]{index=2}
+
+---
+
+## Code Implementations
+
+### C++
+
+```cpp
+# Count Inversions in an Array
+
+A clear and concise README for the classic **Count Inversions** problem, highlighting both brute-force and efficient merge-sort-based solutions.
+
+---
+
+## Problem Statement
+
+Given an array of integers `arr`, **count the number of inversions**. An inversion is any pair `(i, j)` such that:
+
+- `i < j`
+- `arr[i] > arr[j]`
+
+The inversion count measures how "unsorted" the array is:  
+- A fully sorted (ascending) array has 0 inversions.  
+- A reverse-sorted array has the maximum possible inversions.  
+:contentReference[oaicite:0]{index=0}
+
+---
+
+## Approaches
+
+### 1. Brute Force (O(n²))
+
+- Use two nested loops to compare each pair `(i < j)` and increment the count if `arr[i] > arr[j]`.
+- Intuitive and easy, but inefficient for large arrays.
+
+**Time Complexity:** O(n²)  
+**Space Complexity:** O(1)  
+:contentReference[oaicite:1]{index=1}
+
+---
+
+### 2. Efficient Using Merge Sort (O(n log n))
+
+- Use a divide-and-conquer strategy similar to merge sort:
+  1. Recursively count inversions in the left and right halves.
+  2. Sort both halves.
+  3. During the merge step, count cross-inversions: when an element in the left half is greater than one in the right, all remaining elements in the left half beyond that point contribute to inversions.
+- Much more efficient, leveraging sorting to count inversions in linear time during merge.
+
+**Time Complexity:** O(n log n)  
+**Space Complexity:** O(n) — due to temporary arrays during merging  
+:contentReference[oaicite:2]{index=2}
+
+---
+
+## Code Implementations
+
+### C++
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int merge(vector<int> &arr, int low, int mid, int high) {
+    vector<int> temp; // temporary array
+    int left = low;      // starting index of left half of arr
+    int right = mid + 1;   // starting index of right half of arr
+
+    //Modification 1: cnt variable to count the pairs:
+    int cnt = 0;
+
+    //storing elements in the temporary array in a sorted manner//
+
+    while (left <= mid && right <= high) {
+        if (arr[left] <= arr[right]) {
+            temp.push_back(arr[left]);
+            left++;
+        }
+        else {
+            temp.push_back(arr[right]);
+            cnt += (mid - left + 1); //Modification 2
+            right++;
+        }
+    }
+
+    // if elements on the left half are still left //
+
+    while (left <= mid) {
+        temp.push_back(arr[left]);
+        left++;
+    }
+
+    //  if elements on the right half are still left //
+    while (right <= high) {
+        temp.push_back(arr[right]);
+        right++;
+    }
+
+    // transfering all elements from temporary to arr //
+    for (int i = low; i <= high; i++) {
+        arr[i] = temp[i - low];
+    }
+
+    return cnt; // Modification 3
+}
+
+int mergeSort(vector<int> &arr, int low, int high) {
+    int cnt = 0;
+    if (low >= high) return cnt;
+    int mid = (low + high) / 2 ;
+    cnt += mergeSort(arr, low, mid);  // left half
+    cnt += mergeSort(arr, mid + 1, high); // right half
+    cnt += merge(arr, low, mid, high);  // merging sorted halves
+    return cnt;
+}
+
+int numberOfInversions(vector<int>&a, int n) {
+
+    // Count the number of pairs:
+    return mergeSort(a, 0, n - 1);
+}
+
+int main()
+{
+    vector<int> a = {5, 4, 3, 2, 1};
+    int n = 5;
+    int cnt = numberOfInversions(a, n);
+    cout << "The number of inversions are: "
+         << cnt << endl;
+    return 0;
+}
