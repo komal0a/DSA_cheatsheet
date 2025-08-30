@@ -238,7 +238,7 @@ class Solution{
  class BSTiterator{
     private:
     stack<TreeNode*>st;
-    bool before=true;
+    bool before=true;//decreasing
 
     public:
     BSTiterator(TreeNode* root,bool isbefore){
@@ -283,7 +283,7 @@ public:
         while (i < j) {
             int sum = i + j;
             if (sum == k) return true;
-            else if(sum< k)i=l.next();//increase
+            else if(sum < k)i=l.next();//increase
             else j=r.next();//decrease
             }
 
@@ -367,3 +367,161 @@ public:
     }
 };
 
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if(!root)return nullptr;
+
+        if(key < root->val){
+            root->left=deleteNode(root->left,key);
+
+        }else if(key > root->val){
+            root->right=deleteNode(root->right,key);
+        }else{
+            if(!root->left && !root->right){
+               return nullptr;
+            }
+               if (!root->left) return root->right;
+            if (!root->right) return root->left;
+            
+            TreeNode* node=getrightmost(root->left);
+            node->right=root->right;
+             return root->left;
+        }
+        return root;
+    }
+    
+        TreeNode* getrightmost(TreeNode* root){
+            while(root->right){
+                root=root->right;
+            }
+            return root;
+        }
+    
+};
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* insertIntoBST(TreeNode* root, int val) {
+        if(root==nullptr)return new TreeNode(val);
+
+        TreeNode* cur=root;
+        while(true){
+            if(cur->val < val){
+                if(cur->right != nullptr)cur=cur->right;
+                else{
+                cur->right = new TreeNode(val);
+                break;
+                } 
+            }else{
+               if(cur->left != nullptr)cur=cur->left;
+                else{
+                cur->left = new TreeNode(val);
+                break;
+                } 
+            }
+        }
+        return root;
+    }
+
+};
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* solve(vector<int>& preorder,int limit,int &i){
+        if(i>=preorder.size() || preorder[i]>limit){
+            return nullptr;
+        }
+
+        TreeNode* root=new TreeNode(preorder[i++]);
+        root->left=solve(preorder,root->val,i);
+        root-> right=solve(preorder,limit,i);
+
+        return root;
+    }
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+
+        int i=0;
+        return solve(preorder,INT_MAX,i);
+    }
+
+};
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* prev;
+    TreeNode* first;
+    TreeNode* middle;
+    TreeNode* last;
+    
+    void inorder(TreeNode* root){
+        if(!root)return;
+
+        inorder(root->left);    
+
+        if(prev != nullptr && (root->val < prev->val)){
+
+            if(first==NULL){
+                first=prev;
+                middle=root;
+        
+            }else{
+                last=root;
+            }
+        }
+
+        prev=root;
+
+        inorder(root->right);
+    }
+    void recoverTree(TreeNode* root) {
+         first=middle=last=NULL;
+       prev=new TreeNode(INT_MIN);
+        inorder(root);
+        if(first && last)swap(first->val,last->val);
+        else if(first && middle)swap(first->val,middle->val);
+    }   
+};
